@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.temporal.app.MainActivity
-import com.temporal.app.R
 import kotlin.random.Random
 
 object Notifier {
@@ -19,7 +18,7 @@ object Notifier {
       putExtra("route", route)
     }
 
-    val pendingIntent = PendingIntent.getActivity(
+    val pi = PendingIntent.getActivity(
       context,
       1000 + Random.nextInt(100000),
       intent,
@@ -27,11 +26,11 @@ object Notifier {
     )
 
     val notification = NotificationCompat.Builder(context, NotificationChannels.GENERAL)
-      .setSmallIcon(R.mipmap.ic_launcher) // garanti kaynak
+      .setSmallIcon(android.R.drawable.ic_dialog_info) // %100 var
       .setContentTitle(title)
       .setContentText(text)
       .setAutoCancel(true)
-      .setContentIntent(pendingIntent)
+      .setContentIntent(pi)
       .build()
 
     NotificationManagerCompat.from(context)
