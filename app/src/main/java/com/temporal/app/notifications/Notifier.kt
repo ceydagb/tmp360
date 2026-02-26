@@ -14,26 +14,27 @@ object Notifier {
   fun show(context: Context, title: String, text: String, route: String) {
     NotificationChannels.ensure(context)
 
-    val i = Intent(context, MainActivity::class.java).apply {
+    val intent = Intent(context, MainActivity::class.java).apply {
       flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
       putExtra("route", route)
     }
 
-    val pi = PendingIntent.getActivity(
+    val pendingIntent = PendingIntent.getActivity(
       context,
       1000 + Random.nextInt(100000),
-      i,
+      intent,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    val n = NotificationCompat.Builder(context, NotificationChannels.GENERAL)
-      .setSmallIcon(R.drawable.ic_launcher_foreground)
+    val notification = NotificationCompat.Builder(context, NotificationChannels.GENERAL)
+      .setSmallIcon(R.mipmap.ic_launcher) // garanti kaynak
       .setContentTitle(title)
       .setContentText(text)
       .setAutoCancel(true)
-      .setContentIntent(pi)
+      .setContentIntent(pendingIntent)
       .build()
 
-    NotificationManagerCompat.from(context).notify(2000 + Random.nextInt(100000), n)
+    NotificationManagerCompat.from(context)
+      .notify(2000 + Random.nextInt(100000), notification)
   }
 }
