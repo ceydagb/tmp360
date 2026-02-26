@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:padding="12dp"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <TextView
+    android:id="@+id/tvTitle"
+    android:text="Temporal • Hızlı Giriş"
+    android:textStyle="bold"
+    android:textSize="14sp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
+  <TextView
+    android:id="@+id/tvSummary"
+    android:text="Bugün: su/öğün/nöbet/aura…"
+    android:textSize="12sp"
+    android:layout_marginTop="6dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_marginTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <Button android:id="@+id/btnWater" android:text="Su" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/btnMeal" android:text="Öğün" android:layout_marginStart="8dp" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/btnSeizure" android:text="Nöbet" android:layout_marginStart="8dp" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_marginTop="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <Button android:id="@+id/btnSmoke" android:text="Sigara plan" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/btnAura" android:text="Aura" android:layout_marginStart="8dp" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/btnIntake" android:text="İlaç/Vit." android:layout_marginStart="8dp" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
+  </LinearLayout>
+</LinearLayout>
