@@ -2,6 +2,7 @@ plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
   id("org.jetbrains.kotlin.plugin.serialization")
+  id("org.jetbrains.kotlin.plugin.compose")
   id("com.google.devtools.ksp")
 }
 
@@ -34,13 +35,8 @@ android {
   kotlinOptions { jvmTarget = "17" }
 
   buildFeatures { compose = true }
-  composeOptions {
-    kotlinCompilerExtensionVersion = "1.5.15"
-  }
 
-  packaging {
-    resources.excludes.add("META-INF/*")
-  }
+  packaging { resources.excludes.add("META-INF/*") }
 }
 
 dependencies {
@@ -52,10 +48,10 @@ dependencies {
   implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
   implementation("androidx.activity:activity-compose:1.9.3")
 
-  // AppCompat theme base (XML theme parent için)
+  // XML tema parent için
   implementation("androidx.appcompat:appcompat:1.7.0")
 
-  // Compose UI
+  // Compose
   implementation("androidx.compose.ui:ui")
   implementation("androidx.compose.ui:ui-tooling-preview")
   debugImplementation("androidx.compose.ui:ui-tooling")
@@ -74,6 +70,5 @@ dependencies {
 
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
   implementation("com.google.android.gms:play-services-location:21.3.0")
-
   implementation("androidx.documentfile:documentfile:1.0.1")
 }
