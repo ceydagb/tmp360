@@ -21,7 +21,7 @@ object Notifier {
 
     val pi = PendingIntent.getActivity(
       context,
-      Random.nextInt(),
+      1000 + Random.nextInt(100000),
       i,
       PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
@@ -34,6 +34,6 @@ object Notifier {
       .setContentIntent(pi)
       .build()
 
-    NotificationManagerCompat.from(context).notify(Random.nextInt(), n)
+    NotificationManagerCompat.from(context).notify(2000 + Random.nextInt(100000), n)
   }
 }
