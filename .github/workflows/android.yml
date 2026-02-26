@@ -42,14 +42,17 @@ jobs:
         run: |
           echo "Build failed. Last 200 lines:"
           tail -n 200 build.log || true
-          last_error=$(grep -E "^(e: |error:|FAILURE:|Execution failed|Caused by:)" build.log | tail -n 1 || true)
-          if [ -z "$last_error" ]; then
-            last_error="Build failed; no specific Gradle error pattern found."
+          matches=$(grep -E "^(e: |error:|FAILURE:|Execution failed|Caused by:)" build.log | tail -n 12 || true)
+          if [ -n "$matches" ]; then
+            while IFS= read -r line; do
+              msg="${line//'%'/'%25'}"
+              msg="${msg//$'\n'/'%0A'}"
+              msg="${msg//$'\r'/'%0D'}"
+              echo "::error file=.github/workflows/android.yml,line=1::$msg"
+            done <<< "$matches"
+          else
+            echo "::error file=.github/workflows/android.yml,line=1::Build failed; no specific Gradle error pattern found."
           fi
-          last_error="${last_error//'%'/'%25'}"
-          last_error="${last_error//$'\n'/'%0A'}"
-          last_error="${last_error//$'\r'/'%0D'}"
-          echo "::error file=.github/workflows/android.yml,line=1::$last_error"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
