@@ -60,6 +60,7 @@ fun TemporalApp(initialRoute: String? = null) {
       composable(Routes.AddSeizure) { AddSeizureScreen(nav) }
 
       composable(Routes.Export) { ExportScreen(nav) }
+      // Konum ekranın varsa buraya ekleriz: add_place
     }
   }
 }
