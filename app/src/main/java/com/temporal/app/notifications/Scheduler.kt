@@ -9,17 +9,10 @@ import java.util.concurrent.TimeUnit
 object Scheduler {
 
   fun ensureDailyReminders(context: Context) {
-    // Sabah/öğle/ikindi/akşam + uyku sorusu gibi bildirimleri
-    // Worker içinde “şu an saat kaç” kontrol ederek atıyoruz.
-    scheduleInterval(context, "temporal_daily_reminders", 15)
-  }
-
-  private fun scheduleInterval(context: Context, uniqueName: String, minutes: Long) {
-    val req = PeriodicWorkRequestBuilder<LifeNudgeWorker>(minutes, TimeUnit.MINUTES)
-      .build()
+    val req = PeriodicWorkRequestBuilder<LifeNudgeWorker>(15, TimeUnit.MINUTES).build()
 
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-      uniqueName,
+      "temporal_nudges",
       ExistingPeriodicWorkPolicy.UPDATE,
       req
     )
