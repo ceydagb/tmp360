@@ -31,7 +31,25 @@ jobs:
           gradle --version
 
       - name: Build Debug APK
-        run: gradle assembleDebug --no-daemon
+        shell: bash
+        run: |
+          set -o pipefail
+          gradle assembleDebug --no-daemon 2>&1 | tee build.log
+
+      - name: Report build failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "Build failed. Last 200 lines:"
+          tail -n 200 build.log || true
+          last_error=$(grep -E "^(e: |error:|FAILURE:|Execution failed|Caused by:)" build.log | tail -n 1 || true)
+          if [ -z "$last_error" ]; then
+            last_error="Build failed; no specific Gradle error pattern found."
+          fi
+          last_error="${last_error//'%'/'%25'}"
+          last_error="${last_error//$'\n'/'%0A'}"
+          last_error="${last_error//$'\r'/'%0D'}"
+          echo "::error file=.github/workflows/android.yml,line=1::$last_error"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
