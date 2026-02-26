@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 
@@ -58,7 +57,6 @@ fun TemporalApp(initialRoute: String? = null) {
       composable(Routes.AddMood) { AddMoodScreen(nav) }
       composable(Routes.AddActivity) { AddActivityScreen(nav) }
       composable(Routes.AddHealth) { AddHealthChangeScreen(nav) }
-
       composable(Routes.AddSeizure) { AddSeizureScreen(nav) }
 
       composable(Routes.Export) { ExportScreen(nav) }
