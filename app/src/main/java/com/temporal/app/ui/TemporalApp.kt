@@ -18,6 +18,7 @@ fun TemporalApp(initialRoute: String? = null) {
       NavigationBar {
         val dest = nav.currentBackStackEntryAsState().value?.destination?.route
 
+        @Composable
         fun item(route: String, label: String, icon: @Composable () -> Unit) {
           NavigationBarItem(
             selected = dest == route,
@@ -48,19 +49,16 @@ fun TemporalApp(initialRoute: String? = null) {
       composable(Routes.AddFood) { AddFoodScreen(nav) }
 
       composable(Routes.SmokePlan) { SmokePlanScreen(nav) }
-
       composable(Routes.AddAura) { AddAuraScreen(nav) }
       composable(Routes.AddSleep) { AddSleepScreen(nav) }
 
       composable(Routes.Intake) { IntakeScreen(nav) }
-
       composable(Routes.AddMood) { AddMoodScreen(nav) }
       composable(Routes.AddActivity) { AddActivityScreen(nav) }
       composable(Routes.AddHealth) { AddHealthChangeScreen(nav) }
       composable(Routes.AddSeizure) { AddSeizureScreen(nav) }
 
       composable(Routes.Export) { ExportScreen(nav) }
-      // Konum ekranın varsa buraya ekleriz: add_place
     }
   }
 }
