@@ -6,18 +6,21 @@ import android.content.Context
 import android.os.Build
 
 object NotificationChannels {
-  const val DAILY = "daily"
-  const val SMOKE = "smoke"
-  const val RISK = "risk"
+  const val GENERAL = "temporal_general"
 
   fun ensure(context: Context) {
-    if (Build.VERSION.SDK_INT < 26) return
-    val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    fun ch(id:String, name:String) {
-      nm.createNotificationChannel(NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT))
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+
+    val mgr = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    val ch = NotificationChannel(
+      GENERAL,
+      "Temporal Bildirimleri",
+      NotificationManager.IMPORTANCE_DEFAULT
+    ).apply {
+      description = "Hatırlatmalar ve uyarılar"
     }
-    ch(DAILY, "Günlük hatırlatmalar")
-    ch(SMOKE, "Sigara planı")
-    ch(RISK, "Risk uyarıları")
+
+    mgr.createNotificationChannel(ch)
   }
 }
