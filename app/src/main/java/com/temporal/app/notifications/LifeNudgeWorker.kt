@@ -1,9 +1,12 @@
 package com.temporal.app.notifications
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import com.temporal.app.analysis.AnalysisEngine
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 class LifeNudgeWorker(
   private val ctx: Context,
@@ -33,6 +36,24 @@ class LifeNudgeWorker(
     // 4 saatte bir “Neredesin?” (08,12,16,20 gibi)
     if (near && h % 4 == 0) {
       Notifier.show(ctx, "Neredesin?", "Konumunu kaydet", route = "add_place")
+    }
+
+    val risk = AnalysisEngine.riskBreakdown(ctx, System.currentTimeMillis())
+    if (risk.score >= 7f) {
+      val prefs = ctx.getSharedPreferences("risk_alerts", MODE_PRIVATE)
+      val nowTs = System.currentTimeMillis()
+      val lastHighTs = prefs.getLong("last_high_risk_ts", 0L)
+      val minGap = TimeUnit.HOURS.toMillis(6)
+      if (nowTs - lastHighTs >= minGap) {
+        val reason = if (risk.reasons.isEmpty()) "Birden fazla tetikleyici aktif." else risk.reasons.joinToString(", ")
+        Notifier.show(
+          ctx,
+          "Risk yuksek (${String.format("%.1f", risk.score)}/10)",
+          reason,
+          route = "dashboard"
+        )
+        prefs.edit().putLong("last_high_risk_ts", nowTs).apply()
+      }
     }
 
     return Result.success()

@@ -8,36 +8,67 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 data class Insight(val title:String, val detail:String)
+data class RiskBreakdown(val score: Float, val reasons: List<String>)
 
 object AnalysisEngine {
 
-  suspend fun dailyRisk0to10(context: Context, now: Long): Float = withContext(Dispatchers.IO) {
+  suspend fun riskBreakdown(context: Context, now: Long): RiskBreakdown = withContext(Dispatchers.IO) {
     val dao = TemporalDb.get(context).dao()
     val from = now - TimeUnit.HOURS.toMillis(24)
     var score = 0f
+    val reasons = mutableListOf<String>()
 
     val waterMl = dao.waterSum(Day.startOfDay(now), Day.endOfDay(now))
-    if (waterMl < 1500) score += 2.0f
-    if (waterMl < 1000) score += 1.5f
+    if (waterMl < 1500) {
+      score += 2.0f
+      reasons += "Dusuk su alimi"
+    }
+    if (waterMl < 1000) {
+      score += 1.5f
+      reasons += "Ciddi dehidratasyon riski"
+    }
 
     val seizures24 = dao.seizureCount(from, now)
-    if (seizures24 > 0) score = 10f
+    if (seizures24 > 0) {
+      score = 10f
+      reasons += "Son 24 saatte nobet kaydi var"
+    }
 
     val carbs = dao.carbSum(Day.startOfDay(now), Day.endOfDay(now))
-    if (carbs > 50) score += 1.5f
-    if (carbs > 80) score += 1.5f
+    if (carbs > 50) {
+      score += 1.5f
+      reasons += "Karbonhidrat yuksek"
+    }
+    if (carbs > 80) {
+      score += 1.5f
+      reasons += "Karbonhidrat hedefi ciddi asildi"
+    }
 
     // sleep (if missing yesterday) mild risk
     val yStart = Day.startOfDay(now - TimeUnit.DAYS.toMillis(1))
     val sleep = dao.sleepByDate(yStart)
-    if (sleep == null) score += 1.0f else {
+    if (sleep == null) {
+      score += 1.0f
+      reasons += "Uyku kaydi eksik"
+    } else {
       val durH = (sleep.wake - sleep.sleepStart) / 3600000.0
-      if (durH < 6) score += 2.0f
-      if (durH < 5) score += 1.5f
+      if (durH < 6) {
+        score += 2.0f
+        reasons += "Uyku suresi 6 saatin altinda"
+      }
+      if (durH < 5) {
+        score += 1.5f
+        reasons += "Uyku suresi cok dusuk"
+      }
     }
 
-    score.coerceIn(0f,10f)
+    val finalScore = score.coerceIn(0f,10f)
+    val finalReasons = reasons.distinct().take(3)
+    RiskBreakdown(score = finalScore, reasons = finalReasons)
   }
+
+  suspend fun dailyRisk0to10(context: Context, now: Long): Float =
+    riskBreakdown(context, now).score
 
   suspend fun weeklyInsights(context: Context, now: Long): List<Insight> = withContext(Dispatchers.IO) {
     val dao = TemporalDb.get(context).dao()
