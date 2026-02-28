@@ -61,6 +61,7 @@ interface TemporalDao {
 
   @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertSmokeEvent(x: SmokeEventLog)
   @Query("SELECT * FROM SmokeEventLog WHERE timestamp BETWEEN :from AND :to ORDER BY timestamp DESC") fun smokeBetween(from:Long,to:Long): Flow<List<SmokeEventLog>>
+  @Query("SELECT timestamp FROM SmokeEventLog WHERE smoked = 1 ORDER BY timestamp DESC LIMIT 1") suspend fun lastSmokedAt(): Long?
 
   @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun upsertSmokeSlot(x: SmokePlanSlot)
   @Query("SELECT * FROM SmokePlanSlot WHERE ts BETWEEN :from AND :to ORDER BY ts") suspend fun smokeSlotsBetween(from:Long,to:Long): List<SmokePlanSlot>

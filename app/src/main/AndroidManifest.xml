@@ -29,6 +29,7 @@
 
     <receiver android:name=".notifications.DailyReminderReceiver" android:exported="false" />
     <receiver android:name=".notifications.SmokeReminderReceiver" android:exported="false" />
+    <receiver android:name=".notifications.MedicationReminderReceiver" android:exported="false" />
 
     <receiver android:name=".notifications.PlaceReminderReceiver" android:exported="false" />
 
