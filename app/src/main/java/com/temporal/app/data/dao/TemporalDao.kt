@@ -23,6 +23,7 @@ interface TemporalDao {
   @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertAura(x: AuraLog)
   @Query("SELECT * FROM AuraLog WHERE timestamp BETWEEN :from AND :to ORDER BY timestamp DESC") fun auraBetween(from:Long,to:Long): Flow<List<AuraLog>>
   @Query("SELECT auraType, COUNT(*) as c FROM AuraLog WHERE timestamp BETWEEN :from AND :to GROUP BY auraType ORDER BY c DESC") suspend fun auraCounts(from:Long,to:Long): List<AuraCount>
+  @Query("SELECT COUNT(*) FROM AuraLog WHERE timestamp BETWEEN :from AND :to") suspend fun auraCount(from:Long,to:Long): Int
   data class AuraCount(val auraType:String, val c:Int)
 
   @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun upsertSleep(x: SleepLog)
@@ -39,9 +40,17 @@ interface TemporalDao {
 
   @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertActivity(x: ActivityLog)
   @Query("SELECT * FROM ActivityLog WHERE timestamp BETWEEN :from AND :to ORDER BY timestamp DESC") fun activityBetween(from:Long,to:Long): Flow<List<ActivityLog>>
+  @Query("SELECT COALESCE(SUM(durationMin),0) FROM ActivityLog WHERE timestamp BETWEEN :from AND :to") suspend fun activityDurationSum(from:Long,to:Long): Int
 
   @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertMood(x: MoodLog)
   @Query("SELECT * FROM MoodLog WHERE timestamp BETWEEN :from AND :to ORDER BY timestamp DESC") fun moodBetween(from:Long,to:Long): Flow<List<MoodLog>>
+  @Query(
+    "SELECT COUNT(*) FROM MoodLog WHERE timestamp BETWEEN :from AND :to AND moodMain IN (" +
+      "'Sinirli','Kaygili','Uzgun','Sinirli ','Kaygili ','Uzgun ','Sinirli?','Kaygili?','Uzgun?'," +
+      "'Sinirli','Kaygılı','Üzgün'" +
+    ")"
+  )
+  suspend fun negativeMoodCount(from:Long,to:Long): Int
 
   @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun insertHealth(x: HealthChangeLog)
   @Query("SELECT * FROM HealthChangeLog WHERE timestamp BETWEEN :from AND :to ORDER BY timestamp DESC") fun healthBetween(from:Long,to:Long): Flow<List<HealthChangeLog>>
